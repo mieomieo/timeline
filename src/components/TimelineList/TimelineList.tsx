@@ -1,27 +1,38 @@
 import styles from "./TimelineList.module.css";
 import { storage } from "../../fake.ts";
 import {useState} from 'react';
+import { v4 as uuidv4 } from 'uuid';
 function TimelineList() {
 // const initLists = [...lists];
 const [lists,setLists] = useState(storage);
   const listItems = lists.map((list) => (
-    <li>
+    <li key={list.id}>
+      <p>id:{list.id}</p>
       <h3 className={styles.title}>{list.title}</h3>
       <p>{list.content}</p>
       <a href="#">Edit &gt;</a>
-      <a className={styles['delete-btn']} href="#">Delete</a>
+      <a onClick={()=>handleDelete(list.id)} className={styles['delete-btn']}  >Delete</a>
       <span className={styles.circle}></span>
       <span className={styles.line}></span>
       <span className={styles.date}>{list.createAt}</span>
     </li>
   ));
+  const handleDelete = (id:string)=>{
+    const newArr= lists.filter(item => item.id !== id);
+    // const newArr = [...lists];
+    // newArr.splice(id,1)
+    setLists([...newArr])
+  }
   const handleAdd = () =>{
     setLists([...lists,{
-        title:'Front End Developer',
-        content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eaque quidem esse? Incidunt, odit beatae?',
-        createAt:'January 2022'
+        id:uuidv4(),
+        title:'...',
+        content:'...',
+        createAt:'...'
     }]);
   }
+
+
   return (
     <>
       <div className={styles.main}>

@@ -2,6 +2,8 @@ import styles from "./TimelineList.module.css";
 import { storage } from "../../fake.ts";
 import { useState, MouseEventHandler, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
+import NodeItem from '../NodeItem/NodeItem.tsx'
+
 
 type EventItem = {
   title: string;
@@ -13,59 +15,60 @@ type EventItem = {
 function TimelineList() {
   const listTmp: EventItem[] = [];
   const [listEventItem, setListEventItem] = useState(listTmp);
-  const timeLineRef = useRef<HTMLDivElement>(null);
-  const [date, setDate] = useState<number | undefined>();
   const [lists, setLists] = useState(storage);
   const [heightOfTimeLine, setHeightOfTimeLine] = useState(1000);
+
+  //useRef
+  const timeLineRef = useRef<HTMLDivElement>(null);
 
   const handleDelete = (id: string) => {
     const newArr = lists.filter((item) => item.id !== id);
     setLists([...newArr]);
   };
-
   const handleChooseTimeline: MouseEventHandler<HTMLDivElement> = (e) => {
-    // const heightOfTimeLine:number | undefined = timeLineRef.current.getBoundingClientRect().height;
-    // console.log(heightOfTimeLine);
-    // setHeightOfTimeLine(heightOfTimeLine);
-    const heightOfTimeLine = 1000;
-    const logPercent = Math.floor(((e.pageY - 170) / heightOfTimeLine) * 100);
-    console.log("value: ", `${logPercent} %`);
+    const topOfTimeLine:number | null = timeLineRef.current.getBoundingClientRect().top;
+    const y = e.clientY - topOfTimeLine;
+    console.log("clientY:",e.clientY);
+    console.log("Y:",y);
+    
+    const offSetHeightOfTarget = e.currentTarget.offsetHeight;
+    const logPercent = Math.floor(((y) / offSetHeightOfTarget) * 100);
+    // console.log("value: ", `${logPercent} %`);
     const day = Math.floor((1095 * logPercent) / 100);
-    setDate(day);
-    console.log("Day:", day);
-    setLists((prevLists) => [
-      ...prevLists,
+   
+    console.log("offsetY:", y);
+    setLists((prev)=>[
+      ...prev,
       {
         id: uuidv4(),
         title: "..aaaa.",
         content:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eaque quidem esse? Incidunt, odit beatae?",
-        createAt: "...",
+          "",
+        createAt:day,
+        offsetY:y
       },
-    ]);
+    ]
+    );
   };
-
-  const listItems = lists.map((list) => (
-    <li key={list.id}>
-      <p>id:{list.id}</p>
-      <h3 className={styles.title}>{list.title}</h3>
-      <p>{list.content}</p>
-      <a>Edit &gt;</a>
-      <a onClick={() => handleDelete(list.id)} className={styles["delete-btn"]}>
-        Delete
-      </a>
-      <span className={styles.circle}></span>
-      <span className={styles.line}></span>
-      <span className={styles.date}>{list.createAt}</span>
-    </li>
-  ));
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
   return (
     <>
       <div className={styles.main}>
         <h3 className={styles.heading}>Timeline</h3>
         <div className={styles.container}>
-          <ul>{listItems}</ul>
+          <ul>
+            {
+              lists.map((item)=>(
+                  <NodeItem  key={item.id}
+                  id={item.id} 
+                  title={item.title} 
+                  content={item.content} 
+                  createAt={item.createAt}
+                  handleDelete={handleDelete}
+                  offsetY={item.offsetY}
+                  />
+              ))
+            }</ul>
           <div
             style={{ height: `${heightOfTimeLine}px` }}
             ref={timeLineRef}
@@ -73,7 +76,7 @@ function TimelineList() {
             className={styles.timeline}
           >
             <div className={styles.circleBottom}></div>
-            <div>{date}</div>
+            {/* <div>{date}</div> */}
           </div>
         </div>
       </div>

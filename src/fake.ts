@@ -1,4 +1,4 @@
-export const storage:{ id:string, title: string, content: string, createAt: string }[] = [
+export const storage:{ id:string, title: string, content: string, createAt: number, offsetY:number }[] = [
     // {   id:'0',
     //     title:'Front End Developer1',
     //     content:'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eaque quidem esse? Incidunt, odit beatae?',

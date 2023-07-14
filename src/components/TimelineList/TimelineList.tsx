@@ -2,8 +2,7 @@ import styles from "./TimelineList.module.css";
 import { storage } from "../../fake.ts";
 import { useState, MouseEventHandler, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-import NodeItem from '../NodeItem/NodeItem.tsx'
-
+import NodeItem from "../NodeItem/NodeItem.tsx";
 
 type EventItem = {
   title: string;
@@ -17,6 +16,8 @@ function TimelineList() {
   const [listEventItem, setListEventItem] = useState(listTmp);
   const [lists, setLists] = useState(storage);
   const [heightOfTimeLine, setHeightOfTimeLine] = useState(1000);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedContent, setEditedContent] = useState("");
 
   //useRef
   const timeLineRef = useRef<HTMLDivElement>(null);
@@ -26,49 +27,52 @@ function TimelineList() {
     setLists([...newArr]);
   };
   const handleChooseTimeline: MouseEventHandler<HTMLDivElement> = (e) => {
-    const topOfTimeLine:number | null = timeLineRef.current.getBoundingClientRect().top;
+    const topOfTimeLine: number | null =
+      timeLineRef.current.getBoundingClientRect().top;
     const y = e.clientY - topOfTimeLine;
-    console.log("clientY:",e.clientY);
-    console.log("Y:",y);
-    
+    console.log("clientY:", e.clientY);
+    console.log("Y:", y);
+
     const offSetHeightOfTarget = e.currentTarget.offsetHeight;
-    const logPercent = Math.floor(((y) / offSetHeightOfTarget) * 100);
+    const logPercent = Math.floor((y / offSetHeightOfTarget) * 100);
     // console.log("value: ", `${logPercent} %`);
     const day = Math.floor((1095 * logPercent) / 100);
-   
+
     console.log("offsetY:", y);
-    setLists((prev)=>[
+    setLists((prev) => [
       ...prev,
       {
         id: uuidv4(),
         title: "..aaaa.",
-        content:
-          "",
-        createAt:day,
-        offsetY:y
+        content: "",
+        createAt: day,
+        offsetY: y,
       },
-    ]
-    );
+    ]);
   };
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+
   return (
     <>
       <div className={styles.main}>
         <h3 className={styles.heading}>Timeline</h3>
         <div className={styles.container}>
           <ul>
-            {
-              lists.map((item)=>(
-                  <NodeItem  key={item.id}
-                  id={item.id} 
-                  title={item.title} 
-                  content={item.content} 
-                  createAt={item.createAt}
-                  handleDelete={handleDelete}
-                  offsetY={item.offsetY}
-                  />
-              ))
-            }</ul>
+            {lists.map((item) => (
+              <NodeItem
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                content={item.content}
+                createAt={item.createAt}
+                handleDelete={handleDelete}
+                offsetY={item.offsetY}
+                editedTitle={editedTitle}
+                setEditedTitle={setEditedTitle}
+                editedContent={editedContent}
+                setEditedContent={setEditedContent}
+              />
+            ))}
+          </ul>
           <div
             style={{ height: `${heightOfTimeLine}px` }}
             ref={timeLineRef}
@@ -76,7 +80,7 @@ function TimelineList() {
             className={styles.timeline}
           >
             <div className={styles.circleBottom}></div>
-            {/* <div>{date}</div> */}
+     
           </div>
         </div>
       </div>

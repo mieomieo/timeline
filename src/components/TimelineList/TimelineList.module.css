@@ -40,8 +40,9 @@
 }
 
 .container .timeline {
+    cursor: pointer;
     position: absolute;
-    transform: translateX(-1px);
+    transform: translateX(0px);
     content: '';
     width: 6px;
     /* height: 100%; */
@@ -239,11 +240,10 @@ ul li .date {
         transform: translateX(15px);
         display: inline;
     }
-
-
     .container .timeline{
-        left: -30px;
+        left:-30px;
     }
+
     .container ul li {
         width: 100%;
         float: none;

@@ -1,8 +1,8 @@
 import styles from "./TimelineList.module.css";
 import { storage } from "../../fake.ts";
-import { useState, MouseEventHandler, useRef } from "react";
+import { useEffect,useState, MouseEventHandler, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-import NodeItem from "../NodeItem/NodeItem.tsx";
+import NodeItem,{NodeItemPayload} from "../NodeItem/NodeItem.tsx";
 
 type EventItem = {
   title: string;
@@ -16,41 +16,55 @@ function TimelineList() {
   const [listEventItem, setListEventItem] = useState(listTmp);
   const [lists, setLists] = useState(storage);
   const [heightOfTimeLine, setHeightOfTimeLine] = useState(1000);
-  const [editedTitle, setEditedTitle] = useState("");
-  const [editedContent, setEditedContent] = useState("");
+  const [isClicked, setIsClicked] = useState(false);
 
   //useRef
   const timeLineRef = useRef<HTMLDivElement>(null);
 
   const handleDelete = (id: string) => {
     const newArr = lists.filter((item) => item.id !== id);
-    setLists([...newArr]);
+    setLists(newArr);
   };
+
   const handleChooseTimeline: MouseEventHandler<HTMLDivElement> = (e) => {
     const topOfTimeLine: number | null =
       timeLineRef.current.getBoundingClientRect().top;
     const y = e.clientY - topOfTimeLine;
-    console.log("clientY:", e.clientY);
-    console.log("Y:", y);
+    // console.log("clientY:", e.clientY);
+    // console.log("Y:", y);
 
     const offSetHeightOfTarget = e.currentTarget.offsetHeight;
     const logPercent = Math.floor((y / offSetHeightOfTarget) * 100);
     // console.log("value: ", `${logPercent} %`);
     const day = Math.floor((1095 * logPercent) / 100);
 
-    console.log("offsetY:", y);
     setLists((prev) => [
       ...prev,
       {
         id: uuidv4(),
         title: "..aaaa.",
-        content: "",
+        content: "ababbb",
         createAt: day,
         offsetY: y,
       },
-    ]);
+    ]
+    );
+    // console.log("Array:", lists);
   };
-
+  useEffect(() => {
+    console.log("Array:", lists);
+  }, [lists]);
+  const handleEdit = (id:string,payload:NodeItemPayload)=>{
+    const index = lists.findIndex((item)=> item.id === id  );
+    const newArr = [...lists];
+    newArr[index].title = payload.editedTitle; 
+    newArr[index].content = payload.editedContent;
+    if (payload.editedDate !== undefined) {
+      newArr[index].createAt = payload.editedDate;
+    }
+    setLists(newArr);
+    
+  };
   return (
     <>
       <div className={styles.main}>
@@ -66,10 +80,7 @@ function TimelineList() {
                 createAt={item.createAt}
                 handleDelete={handleDelete}
                 offsetY={item.offsetY}
-                editedTitle={editedTitle}
-                setEditedTitle={setEditedTitle}
-                editedContent={editedContent}
-                setEditedContent={setEditedContent}
+                handleEdit = {handleEdit}
               />
             ))}
           </ul>

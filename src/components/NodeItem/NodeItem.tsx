@@ -19,12 +19,13 @@ export type NodeItemPayload = {
 
 function NodeItem(props: NodeItemPropsType) {
   const [isEditing, setIsEditing] = useState(true);
-  const [editedTitle, setEditedTitle] = useState("");
-  const [editedContent, setEditedContent] = useState("");
   const [editedDate, setEditedDate] = useState();
   const [isEditedOffsetY, setIsEditedOffsetY] = useState<boolean>(false);
   const [editedOffsetY, setEditedOffsetY] = useState<number>(0);
   const [isHidenNodeItem, setIsHidenNodeItem] = useState<boolean>(false);
+
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedContent, setEditedContent] = useState("");
 
   // Function
   const handleEdit = () => {
@@ -58,7 +59,12 @@ function NodeItem(props: NodeItemPropsType) {
     }
   };
   const handleCancel = () => {
-    setIsEditing(false);
+    if (editedTitle === "" && editedContent === "") {
+      console.log("click cancel");
+      props.handleDelete(props.id);
+    } else {
+      setIsEditing(false);
+    }
   };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {

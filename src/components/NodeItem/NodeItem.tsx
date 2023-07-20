@@ -18,7 +18,7 @@ export type NodeItemPayload = {
 };
 
 function NodeItem(props: NodeItemPropsType) {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [editedDate, setEditedDate] = useState();

@@ -68,7 +68,7 @@ function NodeItem(props: NodeItemPropsType) {
   };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
-      // Xử lý lưu thay đổi khi nhấn Enter
+
       handleEdit();
     }
   };
